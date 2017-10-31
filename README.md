@@ -1,5 +1,5 @@
 # Quick Note
-This is not ready for public consumption yet.
+This is not ready for public consumption yet. This is in alpha stage and there are some issues that need to be sorted out before it will be ready for others to use.
 
 # Überauth StackOverflow
 
@@ -13,7 +13,7 @@ This is not ready for public consumption yet.
 
     ```elixir
     def deps do
-      [{:ueberauth_stackoverflow, "~> 0.4"}]
+      [{:ueberauth_stackoverflow, "~> 0.0.1"}]
     end
     ```
 
