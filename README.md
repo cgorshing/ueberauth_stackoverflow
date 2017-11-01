@@ -2,7 +2,7 @@
 This is not ready for public consumption yet. This is in
 alpha stage and there are some issues that need to be sorted out before it will
 be ready for others to use. (i.e. handling gzipped compression). The gzipped
-compression probably should be handled in hackey (which is what most of the
+compression probably should be handled in hackney (which is what most of the
 ueberauth strategies use). There is [an outstanding
 issue](https://github.com/benoitc/hackney/issues/155) for this and I'm looking
 at submitting a PR for this feature.
