@@ -1,5 +1,15 @@
-# Quick Note
-This is not ready for public consumption yet. This is in alpha stage and there are some issues that need to be sorted out before it will be ready for others to use.
+# A Couple Quick Notes
+This is not ready for public consumption yet. This is in
+alpha stage and there are some issues that need to be sorted out before it will
+be ready for others to use. (i.e. handling gzipped compression). The gzipped
+compression probably should be handled in hackey (which is what most of the
+ueberauth strategies use). There is [an outstanding
+issue](https://github.com/benoitc/hackney/issues/155) for this and I'm looking
+at submitting a PR for this feature.
+
+Secondly - The Stack Exchange API does not return any email address for the
+user. So if you are wanting to use this to get at that kind of information,
+you might look else where or plan on asking the user for an email. See [this answer]( https://stackoverflow.com/questions/37026028/how-to-get-stackexchange-users-email-id-through-the-api).
 
 # Überauth StackOverflow
 
