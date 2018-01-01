@@ -18,8 +18,12 @@ defmodule Ueberauth.StackOverflow.Mixfile do
      docs: docs()]
   end
 
+  #config :oauth2, serializers: %{ "application/json" => JsonHandler }
+
   def application do
-    [applications: [:logger, :ueberauth, :oauth2]]
+    [
+      applications: [:logger, :ueberauth, :oauth2]
+    ]
   end
 
   defp deps do
