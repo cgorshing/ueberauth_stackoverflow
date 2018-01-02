@@ -2,6 +2,7 @@ defmodule Ueberauth.StackOverflow.Mixfile do
   use Mix.Project
 
   @version "0.0.2"
+  @source_url "https://github.com/cgorshing/ueberauth_stackoverflow"
 
   def project do
     [app: :ueberauth_stackoverflow,
@@ -11,7 +12,7 @@ defmodule Ueberauth.StackOverflow.Mixfile do
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     source_url: "https://github.com/cgorshing/ueberauth_stackoverflow",
+     source_url: @source_url,
      homepage_url: "https://github.com/cgorshing/ueberauth_stackoverflow",
      description: description(),
      deps: deps(),
