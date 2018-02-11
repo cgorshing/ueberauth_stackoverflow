@@ -88,14 +88,14 @@ Depending on the configured url you can initial the request through:
 
 Or with options:
 
-    /auth/stackoverflow?scope=user,public_repo
+    /auth/stackoverflow?scope=no_expiry
 
-By default the requested scope is "user,public\_repo". This provides both read and write access to the StackOverflow user profile details and public repos. For a read-only scope, either use "user:email" or an empty scope "". See more at [StackOverflow's OAuth Documentation](https://api.stackexchange.com/docs). Scope can be configured either explicitly as a `scope` query value on the request path or in your configuration:
+By default the requested scope is "". This provides "an application to identify a user via the /me method". See more at [StackOverflow's OAuth Documentation](http://api.stackexchange.com/docs/authentication#scope). Scope can be configured either explicitly as a `scope` query value on the request path or in your configuration:
 
 ```elixir
 config :ueberauth, Ueberauth,
   providers: [
-    stackoverflow: {Ueberauth.Strategy.StackOverflow, [default_scope: "user,public_repo,notifications"]}
+    stackoverflow: {Ueberauth.Strategy.StackOverflow, [default_scope: "private_info no_expiry"]}
   ]
 ```
 

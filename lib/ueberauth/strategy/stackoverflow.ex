@@ -1,4 +1,6 @@
 defmodule Ueberauth.Strategy.StackOverflow do
+  require Logger
+
   @moduledoc """
   Provides an Ueberauth strategy for authenticating with StackOverflow.
 
@@ -6,20 +8,20 @@ defmodule Ueberauth.Strategy.StackOverflow do
 
   Create an application in StackOverflow for you to use.
 
-  Register a new application at: [your github developer page](https://github.com/settings/developers) and get the `client_id` and `client_secret`.
+  Register a new application at: [StackExchange](https://stackapps.com/apps/oauth/register) and get the `client_id` and `client_secret`.
 
   Include the provider in your configuration for Ueberauth
 
       config :ueberauth, Ueberauth,
         providers: [
-          github: { Ueberauth.Strategy.StackOverflow, [] }
+          stackoverflow: { Ueberauth.Strategy.StackOverflow, [] }
         ]
 
-  Then include the configuration for github.
+  Then include the configuration for stackoverflow.
 
       config :ueberauth, Ueberauth.Strategy.StackOverflow.OAuth,
-        client_id: System.get_env("GITHUB_CLIENT_ID"),
-        client_secret: System.get_env("GITHUB_CLIENT_SECRET")
+        client_id: System.get_env("SO_CLIENT_ID"),
+        client_secret: System.get_env("SO_CLIENT_SECRET")
 
   If you haven't already, create a pipeline and setup routes for your callback handler
 
@@ -54,7 +56,7 @@ defmodule Ueberauth.Strategy.StackOverflow do
 
       config :ueberauth, Ueberauth,
         providers: [
-          github: { Ueberauth.Strategy.StackOverflow, [uid_field: :email] }
+          stackoverflow: { Ueberauth.Strategy.StackOverflow, [uid_field: :email] }
         ]
 
   Default is `:id`
@@ -63,13 +65,13 @@ defmodule Ueberauth.Strategy.StackOverflow do
 
       config :ueberauth, Ueberauth,
         providers: [
-          github: { Ueberauth.Strategy.StackOverflow, [default_scope: "user,public_repo"] }
+          stackoverflow: { Ueberauth.Strategy.StackOverflow, [default_scope: "no_expiry"] }
         ]
 
-  Default is "user,public_repo"
+  Default is "" (empty)
   """
-  use Ueberauth.Strategy, uid_field: :id,
-                          default_scope: "user,public_repo",
+  use Ueberauth.Strategy, uid_field: :account_id,
+                          default_scope: "",
                           oauth2_module: Ueberauth.Strategy.StackOverflow.OAuth
 
   alias Ueberauth.Auth.Info
@@ -77,13 +79,13 @@ defmodule Ueberauth.Strategy.StackOverflow do
   alias Ueberauth.Auth.Extra
 
   @doc """
-  Handles the initial redirect to the github authentication page.
+  Handles the initial redirect to the stackoverflow authentication page.
 
-  To customize the scope (permissions) that are requested by github include them as part of your url:
+  To customize the scope (permissions) that are requested by stackoverflow include them as part of your url:
 
-      "/auth/github?scope=user,public_repo,gist"
+      "/auth/stackoverflow?scope=no_expiry,private_info"
 
-  You can also include a `state` param that github will return to you.
+  You can also include a `state` param that stackoverflow will return to you.
   """
   def handle_request!(conn) do
     scopes = conn.params["scope"] || option(conn, :default_scope)
@@ -136,20 +138,17 @@ defmodule Ueberauth.Strategy.StackOverflow do
   Fetches the uid field from the StackOverflow response. This defaults to the option `account_id`
   """
   def uid(conn) do
-    user = conn.private.stackoverflow_user
-
     #user_id is the "per site" user id (so StackOverflow would have a different user_id than superuser)
     #account_id is the whole/global Stack Exchange account id
-    user["account_id"]
+    field = conn |> option(:uid_field) |> to_string()
+
+    conn.private.stackoverflow_user[field]
   end
 
   @doc """
   Includes the credentials from the StackOverflow response.
   """
   def credentials(conn) do
-    IO.puts "+++ credentials/1"
-    IO.inspect conn.private.stackoverflow_token
-
     token        = conn.private.stackoverflow_token
     scope_string = (token.other_params["scope"] || "")
     scopes       = String.split(scope_string, ",")
@@ -181,6 +180,8 @@ defmodule Ueberauth.Strategy.StackOverflow do
 
       location: user["location"],
       image: user["profile_image"],
+
+      description: user["about_me"],
       urls: %{
         website_url: user["website_url"],
         link: user["link"]
@@ -202,7 +203,7 @@ defmodule Ueberauth.Strategy.StackOverflow do
 
   defp fetch_user(conn, token) do
     conn = put_private(conn, :stackoverflow_token, token)
-    # Will be better with Elixir 1.3 with/else
+
     case Ueberauth.Strategy.StackOverflow.OAuth.get(token, "/2.2/me") do
       {:ok, %OAuth2.Response{status_code: 401, body: _body}} ->
         set_errors!(conn, [error("token", "unauthorized")])

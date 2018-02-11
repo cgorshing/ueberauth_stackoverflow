@@ -1,4 +1,6 @@
 defmodule Ueberauth.Strategy.StackOverflow.OAuth do
+  require Logger
+
   @moduledoc """
   An implementation of OAuth2 for StackOverflow.
 
@@ -7,6 +9,18 @@ defmodule Ueberauth.Strategy.StackOverflow.OAuth do
       config :ueberauth, Ueberauth.Strategy.StackOverflow.OAuth,
         client_id: System.get_env("STACKOVERFLOW_CLIENT_ID"),
         client_secret: System.get_env("STACKOVERFLOW_CLIENT_SECRET")
+
+  Following is a full list of the possible options:
+
+      config :ueberauth, Ueberauth.Strategy.StackOverflow.OAuth,
+        client_id: System.get_env("STACKOVERFLOW_CLIENT_ID"),
+        client_secret: System.get_env("STACKOVERFLOW_CLIENT_SECRET")
+
+        filter: "!9YdnSA07B",
+        server_url: "https://api.stackexchange.com",
+        authorize_url: "https://stackexchange.com/oauth",
+        token_url: "https://stackexchange.com/oauth/access_token",
+        redirect_uri: "http://localhost:4000/auth/stackoverflow/callback"
   """
   use OAuth2.Strategy
 
@@ -20,7 +34,7 @@ defmodule Ueberauth.Strategy.StackOverflow.OAuth do
     stackexchange_site: "stackoverflow",
     filter: "!9YdnSA07B",
     server_url: "https://api.stackexchange.com",
-    authorize_url: "https://stackexchange.com/oauth/authorize",
+    authorize_url: "https://stackexchange.com/oauth",
     token_url: "https://stackexchange.com/oauth/access_token",
     redirect_uri: "http://localhost:4000/auth/stackoverflow/callback"
   ]
@@ -86,8 +100,8 @@ defmodule Ueberauth.Strategy.StackOverflow.OAuth do
 
     #:hackney_trace.enable(:max, :io)
 
-    IO.puts "+++ using this client"
-    IO.inspect client
+    #IO.puts "+++ using this client"
+    #IO.inspect client
 
     OAuth2.Client.get(client, url, headers, opts)
   end
