@@ -1,7 +1,7 @@
 defmodule Ueberauth.StackOverflow.Mixfile do
   use Mix.Project
 
-  @version "0.0.2"
+  @version "0.0.3"
   @source_url "https://github.com/cgorshing/ueberauth_stackoverflow"
 
   def project do
