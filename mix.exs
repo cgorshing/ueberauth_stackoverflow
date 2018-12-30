@@ -13,7 +13,7 @@ defmodule Ueberauth.StackOverflow.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      source_url: @source_url,
-     homepage_url: "https://github.com/cgorshing/ueberauth_stackoverflow",
+     homepage_url: @source_url,
      description: description(),
      deps: deps(),
      docs: docs()]
@@ -29,8 +29,8 @@ defmodule Ueberauth.StackOverflow.Mixfile do
 
   defp deps do
     [
-     {:oauth2, "~> 0.9.1"},
-     {:ueberauth, "~> 0.4.0"},
+     {:oauth2, "~> 0.9"},
+     {:ueberauth, "~> 0.4"},
 
      # dev/test only dependencies
      {:credo, "~> 0.8", only: [:dev, :test]},
